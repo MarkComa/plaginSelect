@@ -1,0 +1,79 @@
+//подключить шрифт
+body {
+  //подключить шрифт
+}
+
+.app {
+  padding-top: 5rem;
+  display: flex;
+  justify-content: center;
+}
+.wrap {
+  width: 500px;
+}
+
+$height: 46px;
+
+.select {
+  width: 100%;
+  position: relative;
+
+  &.open {
+    .select__dropdown {
+      display: block;
+    }
+    .select__input {
+      border-bottom: none;
+      border-radius: 5px 5px 0 0;
+
+      &__icon {
+        transition: 0.2s transform linear;
+        transform: rotate(-90deg);
+      }
+    }
+  }
+
+  &__input {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    border: 1px solid #dedede;
+    border-radius: 5px;
+    height: $height;
+    padding: 0 1rem;
+    cursor: pointer;
+
+    &__icon {
+      transform: rotate(90deg);
+    }
+  }
+  &__dropdown {
+    position: absolute;
+    display: none;
+    top: $height;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    border: 1px solid #dedede;
+    border-radius: 5px;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.3);
+  }
+
+  &__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  &__item {
+    padding: 0.7rem;
+    border-bottom: 1px solid #dedede;
+    &:hover {
+      background-color: #eee;
+      cursor: pointer;
+      transition: 0.15s background-color ease-in;
+    }
+  }
+}
