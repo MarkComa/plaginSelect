@@ -17,9 +17,24 @@ $height: 46px;
 .select {
   width: 100%;
   position: relative;
+  z-index: 100;
+
+  &__backdrop {
+    position: fixed;
+    display: none;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: transparent;
+  }
 
   &.open {
     .select__dropdown {
+      display: block;
+    }
+    .select__backdrop {
       display: block;
     }
     .select__input {
@@ -70,6 +85,11 @@ $height: 46px;
   &__item {
     padding: 0.7rem;
     border-bottom: 1px solid #dedede;
+
+    &.selected {
+      background-color: #9ecbda;
+    }
+
     &:hover {
       background-color: #eee;
       cursor: pointer;

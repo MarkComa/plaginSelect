@@ -1,46 +1,81 @@
-const getTemplate = (placeholder) => {
-  const text = placeholder ?? "placeholder по умолчанию";
-  return ` <div class="select__input" data-type='input'>
-            <span>${text}</span>
-            <span class="select__input__icon">></span>
-          </div>
-          <div class="select__dropdown">
-            <ul class="select__list">
-              <li class="select__item">1</li>
-              <li class="select__item">2</li>
-              <li class="select__item">3</li>
-              <li class="select__item">1</li>
-              <li class="select__item">2</li>
-              <li class="select__item">3</li>
-            </ul>`;
+const getTemplate = (data = [], placeholder, selectedId) => {
+  let text = placeholder ?? "placeholder по умолчанию";
+  const selectItem = data.map((el) => {
+    let cls = "";
+    if (el.id === selectedId) {
+      text = el.value;
+      cls = "selected";
+    }
+    return `<li class="select__item ${cls}" key=${el.id} data-type='item' data-id=${el.id}>
+      ${el.value}
+    </li>
+    `;
+  });
+  return `<div class='select__backdrop' data-type='backdrop'></div>
+            <div class="select__input" data-type='input'>
+                <span data-type='value'>${text}</span>
+                <span class="select__input__icon">></span>
+            </div>
+            <div class="select__dropdown">
+                <ul class="select__list">
+                ${selectItem.join("")}
+                </ul>
+            </div>
+        `;
 };
 
 export class Select {
   constructor(selector, options) {
     this.$el = document.querySelector(selector);
     this.options = options;
+    this.selectedId = options.selectedId;
     this.#render();
     this.#setup();
   }
 
   #render() {
-    const { placeholder } = this.options;
+    const { data, placeholder } = this.options;
     this.$el.classList.add("select");
-    this.$el.innerHTML = getTemplate(placeholder);
+    this.$el.innerHTML = getTemplate(data, placeholder, this.selectedId);
   }
   #setup() {
     this.clickHandler = this.clickHandler.bind(this);
     this.$el.addEventListener("click", this.clickHandler);
+    this.$value = this.$el.querySelector(`[data-type='value']`);
   }
   clickHandler(event) {
     const { type } = event.target.dataset;
-    if (type === "input") {
-      this.toggle();
+    switch (type) {
+      case "input":
+        this.toggle();
+        break;
+      case "item":
+        const id = event.target.dataset.id;
+        this.select(id);
+        break;
+      case "backdrop":
+        this.close();
+        break;
+      default:
+        break;
     }
   }
 
   get isOpen() {
     return this.$el.classList.contains("open");
+  }
+  get current() {
+    return this.options.data.find((el) => el.id === this.selectedId);
+  }
+
+  select(id) {
+    this.selectedId = id;
+    this.$value.textContent = this.current.value;
+    this.$el
+      .querySelectorAll(`[data-type='item']`)
+      .forEach((el) => el.classList.remove("selected"));
+    this.$el.querySelector(`[data-id='${id}']`).classList.add("selected");
+    this.close();
   }
 
   toggle() {

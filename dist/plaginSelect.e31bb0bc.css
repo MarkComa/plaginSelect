@@ -8,8 +8,20 @@
 
 .select {
   width: 100%;
-  position: relative; }
+  position: relative;
+  z-index: 100; }
+  .select__backdrop {
+    position: fixed;
+    display: none;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: transparent; }
   .select.open .select__dropdown {
+    display: block; }
+  .select.open .select__backdrop {
     display: block; }
   .select.open .select__input {
     border-bottom: none;
@@ -47,6 +59,8 @@
   .select__item {
     padding: 0.7rem;
     border-bottom: 1px solid #dedede; }
+    .select__item.selected {
+      background-color: #9ecbda; }
     .select__item:hover {
       background-color: #eee;
       cursor: pointer;

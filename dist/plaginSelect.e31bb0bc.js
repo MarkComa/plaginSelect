@@ -137,9 +137,22 @@ function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollect
 
 function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
 
-var getTemplate = function getTemplate(placeholder) {
+var getTemplate = function getTemplate() {
+  var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var placeholder = arguments.length > 1 ? arguments[1] : undefined;
+  var selectedId = arguments.length > 2 ? arguments[2] : undefined;
   var text = placeholder !== null && placeholder !== void 0 ? placeholder : "placeholder по умолчанию";
-  return " <div class=\"select__input\" data-type='input'>\n            <span>".concat(text, "</span>\n            <span class=\"select__input__icon\">></span>\n          </div>\n          <div class=\"select__dropdown\">\n            <ul class=\"select__list\">\n              <li class=\"select__item\">1</li>\n              <li class=\"select__item\">2</li>\n              <li class=\"select__item\">3</li>\n              <li class=\"select__item\">1</li>\n              <li class=\"select__item\">2</li>\n              <li class=\"select__item\">3</li>\n            </ul>");
+  var selectItem = data.map(function (el) {
+    var cls = "";
+
+    if (el.id === selectedId) {
+      text = el.value;
+      cls = "selected";
+    }
+
+    return "<li class=\"select__item ".concat(cls, "\" key=").concat(el.id, " data-type='item' data-id=").concat(el.id, ">\n      ").concat(el.value, "\n    </li>\n    ");
+  });
+  return "<div class='select__backdrop' data-type='backdrop'></div>\n            <div class=\"select__input\" data-type='input'>\n                <span data-type='value'>".concat(text, "</span>\n                <span class=\"select__input__icon\">></span>\n            </div>\n            <div class=\"select__dropdown\">\n                <ul class=\"select__list\">\n                ").concat(selectItem.join(""), "\n                </ul>\n            </div>\n        ");
 };
 
 var _render = /*#__PURE__*/new WeakSet();
@@ -156,6 +169,7 @@ var Select = /*#__PURE__*/function () {
 
     this.$el = document.querySelector(selector);
     this.options = options;
+    this.selectedId = options.selectedId;
 
     _classPrivateMethodGet(this, _render, _render2).call(this);
 
@@ -167,14 +181,48 @@ var Select = /*#__PURE__*/function () {
     value: function clickHandler(event) {
       var type = event.target.dataset.type;
 
-      if (type === "input") {
-        this.toggle();
+      switch (type) {
+        case "input":
+          this.toggle();
+          break;
+
+        case "item":
+          var id = event.target.dataset.id;
+          this.select(id);
+          break;
+
+        case "backdrop":
+          this.close();
+          break;
+
+        default:
+          break;
       }
     }
   }, {
     key: "isOpen",
     get: function get() {
       return this.$el.classList.contains("open");
+    }
+  }, {
+    key: "current",
+    get: function get() {
+      var _this = this;
+
+      return this.options.data.find(function (el) {
+        return el.id === _this.selectedId;
+      });
+    }
+  }, {
+    key: "select",
+    value: function select(id) {
+      this.selectedId = id;
+      this.$value.textContent = this.current.value;
+      this.$el.querySelectorAll("[data-type='item']").forEach(function (el) {
+        return el.classList.remove("selected");
+      });
+      this.$el.querySelector("[data-id='".concat(id, "']")).classList.add("selected");
+      this.close();
     }
   }, {
     key: "toggle",
@@ -202,14 +250,17 @@ var Select = /*#__PURE__*/function () {
 exports.Select = Select;
 
 function _render2() {
-  var placeholder = this.options.placeholder;
+  var _this$options = this.options,
+      data = _this$options.data,
+      placeholder = _this$options.placeholder;
   this.$el.classList.add("select");
-  this.$el.innerHTML = getTemplate(placeholder);
+  this.$el.innerHTML = getTemplate(data, placeholder, this.selectedId);
 }
 
 function _setup2() {
   this.clickHandler = this.clickHandler.bind(this);
   this.$el.addEventListener("click", this.clickHandler);
+  this.$value = this.$el.querySelector("[data-type='value']");
 }
 },{}],"C:/Users/abramovas/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
 var bundleURL = null;
@@ -291,7 +342,27 @@ var _select = require("./select/select");
 require("./select/select.scss");
 
 var select = new _select.Select("#select", {
-  placeholder: "Выбери элемент"
+  placeholder: "Выбери элемент",
+  selectedId: "2",
+  data: [{
+    id: "1",
+    value: "react"
+  }, {
+    id: "2",
+    value: "react native"
+  }, {
+    id: "3",
+    value: "vue"
+  }, {
+    id: "4",
+    value: "Angular"
+  }, {
+    id: "5",
+    value: "next"
+  }, {
+    id: "6",
+    value: "node"
+  }]
 });
 window.s = select;
 },{"./select/select":"select/select.js","./select/select.scss":"select/select.scss"}],"C:/Users/abramovas/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
