@@ -3,7 +3,7 @@ import "./select/select.scss";
 
 const select = new Select("#select", {
   placeholder: "Выбери элемент",
-  selectedId: "2",
+  //selectedId: "2",
   data: [
     { id: "1", value: "react" },
     { id: "2", value: "react native" },

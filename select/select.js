@@ -88,5 +88,8 @@ export class Select {
   close() {
     this.$el.classList.remove("open");
   }
-  destroy() {}
+  destroy() {
+    this.$el.removeEventListener("click", this.clickHandler);
+    this.$el.innerHTML = "";
+  }
 }
